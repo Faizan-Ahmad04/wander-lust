@@ -10,8 +10,13 @@ const listingSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: "https://img.freepik.com/free-photo/vintage-twilight-pool-nature-light_1203-5731.jpg?t=st=1722275381~exp=1722278981~hmac=a0d204f26ae31cec879db18e03a727a81d6cf75f15499c6e92ffeca685f50982&w=996",
-    },
+        default:
+          "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGdvYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+        set: (v) =>
+          v === ""
+            ? "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGdvYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60"
+            : v,
+      },
     price: {
         type: Number,
         required: true
@@ -25,6 +30,6 @@ const listingSchema = new mongoose.Schema({
     }
 });
 
-const Listing = mongoose.nodel("Listing", listingSchema);
+const Listing = mongoose.model("Listing", listingSchema);
 
 module.exports = Listing;
