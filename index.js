@@ -27,7 +27,6 @@ app.get('/', (req, res) => {
 
 app.get('/listings', async (req, res) => {
   const listings = await Listing.find({});
-  console.log('==============================', listings);
   res.render('listing/index.ejs', { listings: listings });
 });
 
@@ -38,7 +37,6 @@ app.get('/listings/new', (req, res) => {
 app.get('/listings/:id', async (req, res) => {
   const listingId = req.params.id;
   const listing = await Listing.findById({ _id: listingId });
-  console.log('==============================', listing);
   res.render('listing/show.ejs', { listing: listing });
 });
 
@@ -64,7 +62,6 @@ app.put('/listings/:id', async (req, res) => {
 });
 
 app.delete('/listings/:id', async (req, res) => {
-  console.log('=====================', req.params.id);
   const listingId = req.params.id;
   await Listing.findByIdAndDelete(listingId);
   res.redirect('/listings');
