@@ -8,5 +8,12 @@ module.exports.listingSchema = Jio.object({
     price: Jio.string().required().min(0),
     countroy: Jio.string().required(),
     image: Jio.string().allow('', null),
-  }),
+  }).required(),
+});
+
+module.exports.reviewSchema = Jio.object({
+  review: Jio.object({
+    rating: Jio.number().required(),
+    comment: Jio.string().required(),
+  }).required(),
 });

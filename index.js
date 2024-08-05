@@ -6,7 +6,8 @@ const path = require('path');
 const ejsMate = require('ejs-mate');
 const wrapAsync = require('./utils/wrapAsync');
 const ExpressError = require('./ExpressError');
-const { listingSchema } = require('./schema.js');
+const { listingSchema, reviewSchema } = require('./schema.js');
+const Review = require('./models/review.js');
 
 const app = express();
 const PORT = 8000;
@@ -30,7 +31,14 @@ app.get('/', (req, res) => {
 
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
-
+  if (error) {
+    throw new ExpressError(400, error);
+  } else {
+    next();
+  }
+};
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     throw new ExpressError(400, error);
   } else {
@@ -54,7 +62,9 @@ app.get(
   '/listings/:id',
   wrapAsync(async (req, res) => {
     const listingId = req.params.id;
-    const listing = await Listing.findById({ _id: listingId });
+    const listing = await Listing.findById({ _id: listingId }).populate(
+      'reviews',
+    );
     res.render('listing/show.ejs', { listing: listing });
   }),
 );
@@ -62,6 +72,7 @@ app.get(
 //Create Route
 app.post(
   '/listings',
+  validateListing,
   wrapAsync(async (req, res, next) => {
     if (!req.body.listing) {
       next(new ExpressError(400, 'send valid data for listings'));
@@ -82,6 +93,7 @@ app.get(
 
 app.put(
   '/listings/:id',
+  validateListing,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     const updatedListing = await Listing.findByIdAndUpdate(
@@ -102,6 +114,22 @@ app.delete(
     const listingId = req.params.id;
     await Listing.findByIdAndDelete(listingId);
     res.redirect('/listings');
+  }),
+);
+
+app.post(
+  '/listings/:id/reviews',
+  validateReview,
+  wrapAsync(async (req, res) => {
+    const listing = await Listing.findById({ _id: req.params.id });
+    console.log('reviews updated', listing);
+    const newReview = new Review(req.body.review);
+    console.log('reviews', newReview);
+    listing.reviews.push(newReview);
+    await newReview.save();
+    await listing.save();
+
+    res.send('reviews updated');
   }),
 );
 

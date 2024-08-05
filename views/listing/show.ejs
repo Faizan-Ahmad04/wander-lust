@@ -23,4 +23,31 @@
       <button class="btn btn-dark offset-5">Delete</button>
     </form>
   </div>
+  <div class="col-8 offset-3">
+    <hr>
+    <h3>Leave a review</h3>
+    <form method="POST" action="/listings/<%=listing._id%>/reviews" class="needs-validation" novalidate>
+      <div class="md-3">
+        <label for="rating" class="form-label">Rating</label>
+        <input name="review[rating]" min="1" max="5" type="range" class="form-range" required />
+        <div id="validationServerUsernameFeedback" class="invalid-feedback">
+          Please choose a Rating.
+        </div>
+      </div>
+      <div class="md-3">
+        <label for="comment" class="form-label">Description</label>
+        <textarea name="review[comment]" placeholder="enter comment" class="form-control" required></textarea>
+        <div id="validationServerUsernameFeedback" class="invalid-feedback">
+          Please choose a comment.
+        </div>
+      </div><br>
+      <button class="btn btn-dark">Add Review</button>
+    </form>
+    <h1>All Reviews</h1>
+    <ul>
+      <% listing.reviews.forEach((review) => { %>
+      <li> <%= review.comment %>, <%= review.rating %> Star</li>
+      <% }); %>
+    </ul>
+  </div>
 </div>
