@@ -4,7 +4,7 @@
     <h1>Listings Details</h1>
   </div>
   <div class="col-6 offset-3 show-card">
-    <div class="card" style="width: 18rem;">
+    <div class="card listing-card" style="width: 18rem;">
       <img src="<%= listing.image%>" class="card-img-top show-image" alt="listing_image">
       <div class="card-body">
         <p class="card-text">
@@ -42,12 +42,21 @@
         </div>
       </div><br>
       <button class="btn btn-dark">Add Review</button>
-    </form>
-    <h1>All Reviews</h1>
-    <ul>
+    </form><br>
+    <p><b>All Reviews</b></p>
+    <div class="row">
       <% listing.reviews.forEach((review) => { %>
-      <li> <%= review.comment %>, <%= review.rating %> Star</li>
+      <div class="card col-5 ms-3 mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Jane Doe</h5>
+          <p class="card-text"><%= review.comment %></p>
+          <p class="card-text"><%= review.rating %> Star</p>
+        </div><br>
+        <form method="post" action="/listings/<%=listing._id%>/reviews/<%=review._id %>?_method=DELETE">
+          <button class="btn btn-danger">Delete</button>
+        </form><br>
+      </div>
       <% }); %>
-    </ul>
+    </div>
   </div>
 </div>

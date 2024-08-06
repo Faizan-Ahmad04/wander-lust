@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col-8 offset-2"><br>
     <h3>Create a New Listing</h3>
-    <form method="POST" action="/listings">
+    <form method="POST" action="/listings/<%=listing._id%>?_method=PUT">
       <div class="md-3">
         <label for="title" class="form-label">Title</label>
         <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" />
@@ -24,7 +24,7 @@
         </div>
         <div class="md-3 col-md-8">
           <label for="country" class="form-label">Country</label>
-          <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" />
+          <input name="listing[countroy]" value="<%= listing.country %>" type="text" class="form-control" />
         </div>
       </div>
       <div class="md-3">
