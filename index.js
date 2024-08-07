@@ -6,6 +6,9 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require('./ExpressError');
 const listingRoutes = require('./routes/listing.js');
 const reviewRoutes = require('./routes/review.js');
+const session = require('express-session');
+const flash = require('express-flash');
+
 const app = express();
 const PORT = 8000;
 
@@ -21,6 +24,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(flash());
+
+const sessionOptions = {
+  secret: 'mysupersecretcodetoken',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 6,
+    httpOnly: true,
+  },
+};
+
+app.use(session(sessionOptions));
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.errorMsg = req.flash('error');
+  next();
+});
 
 app.use('/listings', listingRoutes);
 app.use('/listings/:id/reviews', reviewRoutes);
