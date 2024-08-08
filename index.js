@@ -6,8 +6,12 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require('./ExpressError');
 const listingRoutes = require('./routes/listing.js');
 const reviewRoutes = require('./routes/review.js');
+const userRoutes = require('./routes/user.js');
 const session = require('express-session');
 const flash = require('express-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user.js');
 
 const app = express();
 const PORT = 8000;
@@ -44,9 +48,24 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use('/listings', listingRoutes);
 app.use('/listings/:id/reviews', reviewRoutes);
+app.use('/users', userRoutes);
 
+app.get('/demouser', async (req, res) => {
+  let fakeUser = new User({
+    email: 'test@example.com',
+    username: 'test_user',
+  });
+  const user = await User.register(fakeUser, 'password');
+  res.send(user);
+});
 //Error handling
 app.all('*', (re, res, next) => {
   next(new ExpressError(404, 'Page not found'));
