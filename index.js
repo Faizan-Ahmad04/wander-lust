@@ -11,7 +11,7 @@ const session = require('express-session');
 const flash = require('express-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const User = require('./models/user.js');
+const User = require('./models/user');
 
 const app = express();
 const PORT = 8000;
