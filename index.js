@@ -68,7 +68,7 @@ app.get('/demouser', async (req, res) => {
 });
 //Error handling
 app.all('*', (re, res, next) => {
-  next(new ExpressError(404, 'Page not found'));
+  return next(new ExpressError(404, 'Page not found'));
 });
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = 'Somting went wrong' } = err;
