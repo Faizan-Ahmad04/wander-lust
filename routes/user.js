@@ -20,11 +20,18 @@ router.post(
       let newUSer = new User({ username, email });
       const registerUser = await User.register(newUSer, password);
       console.log(registerUser);
-      req.flash('success', 'Registration successful! You can now log in');
-      res.redirect('/listings');
+      console.log('=============================================');
+      console.log('=============================================');
+      console.log('=============================================');
+      console.log('=============================================', req.user);
+      req.login(registerUser, err => {
+        if (err) return next(err);
+        req.flash('success', 'Registration successful! You can now log in');
+        return res.redirect('/listings');
+      });
     } catch (e) {
       req.flash('error', e.message);
-      res.redirect('/users/signup');
+      return res.redirect('/users/signup');
     }
   }),
 );
@@ -37,15 +44,15 @@ router.post(
     failureFlash: true,
   }),
   async (req, res) => {
-    res.redirect('/listings');
+    return res.redirect('/listings');
   },
 );
 
-router.get('/users/logout', (req, res, next) => {
+router.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
     req.flash('success', 'Logged out successfully');
-    res.redirect('/listings');
+    return res.redirect('/listings');
   });
 });
 

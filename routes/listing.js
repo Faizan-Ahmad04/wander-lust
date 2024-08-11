@@ -37,9 +37,9 @@ router.get(
     );
     if (!listing) {
       req.flash('error', 'Listing not found');
-      res.redirect('/listings');
+      return res.redirect('/listings');
     }
-    res.render('listing/show.ejs', { listing: listing });
+    return res.render('listing/show.ejs', { listing: listing });
   }),
 );
 
@@ -55,7 +55,7 @@ router.post(
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     req.flash('success', 'New listings created');
-    res.redirect('/listings');
+    return res.redirect('/listings');
   }),
 );
 
@@ -65,9 +65,9 @@ router.get(
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       req.flash('error', 'Listing not found');
-      res.redirect('/listings');
+      return res.redirect('/listings');
     }
-    res.render('listing/edit.ejs', { listing: listing });
+    return res.render('listing/edit.ejs', { listing: listing });
   }),
 );
 
@@ -85,7 +85,7 @@ router.put(
       },
     );
     req.flash('success', 'Listing updated successfully');
-    res.redirect(`/listings/${id}`);
+    return res.redirect(`/listings/${id}`);
   }),
 );
 
@@ -96,7 +96,7 @@ router.delete(
     const listingId = req.params.id;
     await Listing.findByIdAndDelete(listingId);
     req.flash('success', 'Listing deleted successfully');
-    res.redirect('/listings');
+    return res.redirect('/listings');
   }),
 );
 

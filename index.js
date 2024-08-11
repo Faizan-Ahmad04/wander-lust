@@ -45,6 +45,11 @@ app.use(session(sessionOptions));
 app.use((req, res, next) => {
   res.locals.success = req.flash('success');
   res.locals.errorMsg = req.flash('error');
+  res.locals.currUser = req.user;
+  console.log('-------------------------000000000000000000000{}', req.user);
+  // console.log('==============================', currUser);
+  // console.log('==============================', currUser);
+  console.log('==============================', res.locals.currUser);
   next();
 });
 
