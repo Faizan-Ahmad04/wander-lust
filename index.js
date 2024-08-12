@@ -33,7 +33,7 @@ app.use(flash());
 const sessionOptions = {
   secret: 'mysupersecretcodetoken',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -46,12 +46,6 @@ app.use((req, res, next) => {
   res.locals.success = req.flash('success');
   res.locals.errorMsg = req.flash('error');
   res.locals.currUser = req.user;
-  console.log('-------------------------000000000000000000000', res.user);
-
-  if (res.locals.success === 'Registration successful! You can now log in') {
-    console.log('HII hEllo');
-  }
-  console.log('==============================', res.locals.currUser);
   next();
 });
 

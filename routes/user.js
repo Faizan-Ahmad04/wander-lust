@@ -14,7 +14,7 @@ router.get('/login', (req, res) => {
 
 router.post(
   '/signup',
-  wrapAsync(async (req, res, next) => {
+  wrapAsync(async (req, res) => {
     try {
       const { username, email, password } = req.body;
       const newUser = new User({ username, email });
@@ -22,12 +22,12 @@ router.post(
 
       req.login(registeredUser, err => {
         if (err) return next(err);
-        req.flash('success', 'Registration successful! You are now logged in');
-        res.redirect('/listings');
+        req.flash('success', 'Registration successful! You can now log in');
+        return res.redirect('/listings');
       });
     } catch (e) {
       req.flash('error', e.message);
-      res.redirect('/users/signup');
+      return res.redirect('/users/signup');
     }
   }),
 );
@@ -39,8 +39,8 @@ router.post(
     successRedirect: '/listings',
     failureFlash: true,
   }),
-  (req, res) => {
-    console.log('Logged in user:', req.user);
+  async (req, res) => {
+    return res.redirect('/listings');
   },
 );
 
@@ -48,7 +48,7 @@ router.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
     req.flash('success', 'Logged out successfully');
-    res.redirect('/listings');
+    return res.redirect('/listings');
   });
 });
 
