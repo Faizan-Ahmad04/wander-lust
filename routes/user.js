@@ -14,24 +14,20 @@ router.get('/login', (req, res) => {
 
 router.post(
   '/signup',
-  wrapAsync(async (req, res) => {
+  wrapAsync(async (req, res, next) => {
     try {
-      let { username, email, password } = req.body;
-      let newUSer = new User({ username, email });
-      const registerUser = await User.register(newUSer, password);
-      console.log(registerUser);
-      console.log('=============================================');
-      console.log('=============================================');
-      console.log('=============================================');
-      console.log('=============================================', req.user);
-      req.login(registerUser, err => {
+      const { username, email, password } = req.body;
+      const newUser = new User({ username, email });
+      const registeredUser = await User.register(newUser, password);
+
+      req.login(registeredUser, err => {
         if (err) return next(err);
-        req.flash('success', 'Registration successful! You can now log in');
-        return res.redirect('/listings');
+        req.flash('success', 'Registration successful! You are now logged in');
+        res.redirect('/listings');
       });
     } catch (e) {
       req.flash('error', e.message);
-      return res.redirect('/users/signup');
+      res.redirect('/users/signup');
     }
   }),
 );
@@ -43,8 +39,8 @@ router.post(
     successRedirect: '/listings',
     failureFlash: true,
   }),
-  async (req, res) => {
-    return res.redirect('/listings');
+  (req, res) => {
+    console.log('Logged in user:', req.user);
   },
 );
 
@@ -52,7 +48,7 @@ router.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
     req.flash('success', 'Logged out successfully');
-    return res.redirect('/listings');
+    res.redirect('/listings');
   });
 });
 
