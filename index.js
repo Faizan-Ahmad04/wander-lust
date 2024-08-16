@@ -77,4 +77,4 @@ app.use((err, req, res, next) => {
   res.render('error.ejs', { message });
 });
 
-app.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+app.listen(PORT, () => console.log(`server started at port ${PORT}`));
