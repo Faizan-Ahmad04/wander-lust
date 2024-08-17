@@ -3,6 +3,9 @@ const Listing = require('../models/listing.js');
 const ExpressError = require('../ExpressError.js');
 const wrapAsync = require('../utils/wrapAsync');
 const { isLoggedIn } = require('../middleware.js');
+const multer = require('multer');
+const { storage } = require('../cloudConfig.js');
+const upload = multer({ storage });
 
 const { listingSchema } = require('../schema.js');
 const router = express.Router({ mergeParams: true });
@@ -47,12 +50,16 @@ router.get(
 router.post(
   '/',
   isLoggedIn,
-  validateListing,
+  upload.single('listing[image]'),
   wrapAsync(async (req, res, next) => {
+    const url = req.file.path;
+    const filename = req.file.filename;
+    console.log(url, '---------', filename);
     if (!req.body.listing) {
       return next(new ExpressError(400, 'send valid data for listings'));
     }
     const newListing = new Listing(req.body.listing);
+    newListing.image = { url, filename };
     await newListing.save();
     req.flash('success', 'New listings created');
     return res.redirect('/listings');
