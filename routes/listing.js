@@ -74,23 +74,30 @@ router.get(
       req.flash('error', 'Listing not found');
       return res.redirect('/listings');
     }
-    return res.render('listing/edit.ejs', { listing: listing });
+    let originalImageUrl = listing.image.url;
+    originalImageUrl = originalImageUrl.replace('upload', 'upload/w_250');
+    return res.render('listing/edit.ejs', { listing: listing, originalImageUrl });
   }),
 );
 
 router.put(
   '/:id',
-  isLoggedIn,
+  upload.single('listing[image]'),
   validateListing,
   wrapAsync(async (req, res) => {
+    console.log(req.file);
     const id = req.params.id;
-    const updatedListing = await Listing.findByIdAndUpdate(
-      id,
-      req.body.listing,
-      {
-        new: true,
-      },
-    );
+    let updatedListing = await Listing.findByIdAndUpdate(id, req.body.listing, {
+      new: true,
+    });
+
+    if (req.file) {
+      let url = req.file.path;
+      let filename = req.file.filename;
+      updatedListing.image = { url, filename };
+      await updatedListing.save();
+    }
+
     req.flash('success', 'Listing updated successfully');
     return res.redirect(`/listings/${id}`);
   }),
